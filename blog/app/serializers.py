@@ -8,7 +8,7 @@ class AddressSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('street', 'suite', 'city', 'zipcode')
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
-    address = serializers.SlugRelatedField(queryset=Address.objects.all())
+    address = serializers.SlugRelatedField(queryset=Address.objects.all(), slug_field='street')
 
     class Meta:
         model = Profile
