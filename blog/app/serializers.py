@@ -1,0 +1,43 @@
+from rest_framework import serializers
+from .models import *
+
+class AddressSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Address
+        fields = ('street', 'suite', 'city', 'zipcode')
+
+class ProfileSerializer(serializers.HyperlinkedModelSerializer):
+    address = serializers.SlugRelatedField(queryset=Address.objects.all())
+
+    class Meta:
+        model = Profile
+        fields = ('name', 'email', 'address')
+
+class PostSerializer(serializers.HyperlinkedModelSerializer):
+    profile = serializers.SlugRelatedField(queryset=Profile.objects.all(), slug_field='name')
+
+    class Meta:
+        model = Post
+        fields = ('title', 'body', 'profile')
+
+class CommentSerializer(serializers.HyperlinkedModelSerializer):
+    post = serializers.SlugRelatedField(queryset=Post.objects.all(), slug_field='name')
+
+    class Meta:
+        model = Comment
+        fields = ('name', 'email', 'body', 'post')
+
+class ProfilePostSerializer(serializers.HyperlinkedModelSerializer):
+    posts = PostSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ()
+
+class PostCommentSerializer(serializers.HyperlinkedModelSerializer):
+    comments = CommentSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Post
+        fields = ('title', 'body', 'profile', 'comments')
