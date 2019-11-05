@@ -22,7 +22,7 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('title', 'body', 'profile')
 
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
-    post = serializers.SlugRelatedField(queryset=Post.objects.all(), slug_field='name')
+    post = serializers.SlugRelatedField(queryset=Post.objects.all(), slug_field='title')
 
     class Meta:
         model = Comment
