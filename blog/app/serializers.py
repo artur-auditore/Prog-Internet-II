@@ -33,7 +33,7 @@ class ProfilePostSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ()
+        fields = ('name', 'address', 'email', 'posts')
 
 class PostCommentSerializer(serializers.HyperlinkedModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)

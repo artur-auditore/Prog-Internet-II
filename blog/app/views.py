@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
-import json
-
 # Create your views here.
+import json
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -27,17 +26,25 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProfileSerializer
     name = 'profile-detail'
 
+class ProfilePostList(generics.ListCreateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfilePostSerializer
+    name = 'profile-posts-list'
+
+class ProfilePostDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfilePostSerializer
+    name = 'profile-posts-detail'
+
 class ApiRoot(generics.GenericAPIView):
     name = 'api-root'
 
     def get(self, request, *args, **kwargs):
         return Response({
             'profiles': reverse(ProfileList.name, request=request),
-            'address': reverse(AddressList.name, request=request)
+            'address': reverse(AddressList.name, request=request),
+            'posts': reverse(ProfilePostList.name, request=request)
         })
-
-
-
 
 def import_data():
 
