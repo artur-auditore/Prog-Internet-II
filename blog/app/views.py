@@ -46,6 +46,16 @@ class PostCommentDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class =  PostCommentSerializer
     name = 'post-comment-detail'
 
+class PostList(generics.ListCreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    name = 'post-list'
+
+class PostDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    name = 'post-detail'
+
 class ApiRoot(generics.GenericAPIView):
     name = 'api-root'
 
@@ -53,7 +63,8 @@ class ApiRoot(generics.GenericAPIView):
         return Response({
             'profiles': reverse(ProfileList.name, request=request),
             'address': reverse(AddressList.name, request=request),
-            'posts': reverse(ProfilePostList.name, request=request),
+            'posts': reverse(PostList.name, request=request),
+            'profile-posts': reverse(ProfilePostList.name, request=request),
             'comments': reverse(PostCommentList.name, request=request)
         })
 

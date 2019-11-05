@@ -9,5 +9,7 @@ urlpatterns = [
     path('profile-post/', ProfilePostList.as_view(), name=ProfilePostList.name),
     path('profile-post/<int:pk>', ProfilePostDetail.as_view(), name=ProfilePostDetail.name),
     path('post-comments/', PostCommentList.as_view(), name=PostCommentList.name),
-    path('post-comments/<int:pk>', PostCommentDetail.as_view(), name=PostCommentDetail.name)
+    path('post-comments/<int:pk>', PostCommentDetail.as_view(), name=PostCommentDetail.name),
+    path('posts/', PostList.as_view(), name=PostList.name),
+    path('posts/<int:pk>', PostDetail.as_view(), name=PostDetail.name),
 ]
