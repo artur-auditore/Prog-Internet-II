@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 # Create your views here.
 import json
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from rest_framework.views import APIView
+
 from .serializers import *
 
 class AddressList(generics.ListCreateAPIView):
@@ -66,6 +68,26 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CommentSerializer
     name = 'comment-detail'
 
+class ProfileCount(APIView):
+    name = 'profile-count'
+
+    def get(self, request, pk):
+        try:
+            profile = Profile.objects.get(pk=pk)
+        except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        posts = profile.posts.all()
+        comments = []
+        for post in posts:
+            comments.extend(post.comments.all())
+        return Response({
+            'pk': pk,
+            'name': profile.name,
+            'total_posts': len(posts),
+            'total_comments': len(comments)
+        })
+
 class ApiRoot(generics.GenericAPIView):
     name = 'api-root'
 
@@ -75,7 +97,8 @@ class ApiRoot(generics.GenericAPIView):
             'address': reverse(AddressList.name, request=request),
             'posts': reverse(PostList.name, request=request),
             'profile-posts': reverse(ProfilePostList.name, request=request),
-            'comments': reverse(PostCommentList.name, request=request)
+            'comments': reverse(PostCommentList.name, request=request),
+            'profile-count:': reverse(ProfileCount.name, request=request),
         })
 
 def import_data():
