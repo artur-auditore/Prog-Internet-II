@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 # Create your views here.
 import json
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
+from app.permissions import *
 from .serializers import *
 
 class AddressList(generics.ListCreateAPIView):
@@ -52,11 +53,13 @@ class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     name = 'post-list'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     name = 'post-detail'
+    permission_classes = (IsUserOrReadOnly, )
 
 class CommentList(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
@@ -67,6 +70,7 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     name = 'comment-detail'
+    permission_classes = ()
 
 class ProfileCount(APIView):
     name = 'profile-count'
@@ -88,6 +92,20 @@ class ProfileCount(APIView):
             'total_comments': len(comments)
         })
 
+class UserList(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    name = 'user-list'
+    permission_classes = (permissions.IsAuthenticated, IsUserOrReadOnly,)
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    name = 'user-detail'
+    permission_classes = (permissions.IsAuthenticated, IsUserOrReadOnly,)
+
 class ApiRoot(generics.GenericAPIView):
     name = 'api-root'
 
@@ -99,6 +117,7 @@ class ApiRoot(generics.GenericAPIView):
             'profile-posts': reverse(ProfilePostList.name, request=request),
             'comments': reverse(PostCommentList.name, request=request),
             'profile-count:': reverse(ProfileCount.name, request=request),
+            'users:': reverse(UserList.name, request=request),
         })
 
 def import_data():

@@ -8,6 +8,7 @@ class Address(models.Model):
     zipcode = models.CharField(max_length=60)
 
 class Profile(models.Model):
+    user = models.ForeignKey('auth.User', related_name="profiles", on_delete=models.CASCADE)
     name = models.CharField(max_length=60)
     email = models.CharField(max_length=60)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
